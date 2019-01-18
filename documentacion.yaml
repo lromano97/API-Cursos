@@ -1,0 +1,301 @@
+---
+swagger: "2.0"
+info:
+  description: API para la creacion, edicion y eliminacion de cursos
+  version: 1.0.0
+  title: API para cursos
+host: virtserver.swaggerhub.com
+basePath: /lromano/APICursos/1.0.0
+schemes:
+- https
+- http
+paths:
+  /cursos:
+    get:
+      tags:
+      - Curso
+      summary: Obtener cursos
+      description: Se pueden filtrar los cursos a partir de los parametros agregados en el query
+      operationId: obtenerCursos
+      produces:
+      - application/json
+      parameters:
+      - name: anioDictado
+        in: query
+        description: Año en el que se dicto el curso
+        required: false
+        type: string
+      - name: duracion
+        in: query
+        description: Duracion del curso a filtrar
+        required: false
+        type: number
+      responses:
+        200:
+          description: Se obtuvieron los datos de los cursos
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Curso'
+        404:
+          description: No se encontraron datos de cursos
+        500:
+          description: Error de servidor
+    post:
+      tags:
+      - Curso
+      summary: Agregar un nuevo curso
+      operationId: agregarCurso
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: curso
+        description: Curso que quiere ser agregado
+        required: true
+        schema:
+          $ref: '#/definitions/Curso'
+      responses:
+        201:
+          description: Curso creado correctamente
+          schema:
+            $ref: '#/definitions/Curso'
+        400:
+          description: Datos invalidos
+        500:
+          description: Error de servidor
+  /cursos/{cursoId}:
+    delete:
+      tags:
+      - Curso
+      summary: Borrar un curso
+      description: Se elimina un curso a partir de su Id
+      operationId: eliminarCurso
+      produces:
+      - application/json
+      parameters:
+      - name: cursoId
+        in: path
+        description: Id del curso a eliminar
+        required: true
+        type: string
+      responses:
+        200:
+          description: Se elimino correctamente el curso
+          schema:
+            $ref: '#/definitions/Curso'
+        404:
+          description: No se encontraron datos del curso a eliminar
+        500:
+          description: Error de servidor
+  /cursos/{cursoId}/{alumnoId}/nota:
+    patch:
+      tags:
+      - Curso
+      summary: Modifica la nota de un alumno
+      description: Obtiene a un alumno de un determinado curso y le modifica la nota
+      operationId: modificarNota
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: cursoId
+        in: path
+        description: Id del curso a obtener
+        required: true
+        type: string
+      - name: alumnoId
+        in: path
+        description: Id del alumno a modificar la nota
+        required: true
+        type: number
+      - in: body
+        name: nota
+        description: Nota a asignarle al alumno
+        required: true
+        schema:
+          $ref: '#/definitions/nota'
+      responses:
+        200:
+          description: Se cargo la nota correctamente
+          schema:
+            $ref: '#/definitions/Curso'
+        404:
+          description: No se pudo obtener el alumno del curso respectivo
+        500:
+          description: Error de servidor
+  /curso/{cursoId}/alumnos:
+    get:
+      tags:
+      - Curso
+      summary: Obtiene todos los alumnos
+      description: Devuelve todos los alumnos de un curso en particular
+      operationId: obtenerAlumnos
+      produces:
+      - application/json
+      parameters:
+      - name: cursoId
+        in: path
+        description: Id del curso a filtrar
+        required: true
+        type: string
+      responses:
+        200:
+          description: Se obtuvieron los alumnos del curso correctamente
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Alumno'
+        404:
+          description: No se pudo obtener alumnos para el Id provisto
+        500:
+          description: Error en el servidor
+  /cursos/{cursoId}/alumnoDestacado:
+    get:
+      tags:
+      - Curso
+      summary: Obtiene el alumno destacado
+      description: Obtiene el alumno destacado de un curso en particular
+      operationId: obtenerAlumnoDestacado
+      produces:
+      - application/json
+      parameters:
+      - name: cursoId
+        in: path
+        description: Id del curso a filtrar
+        required: true
+        type: string
+      responses:
+        200:
+          description: Se obtuvo el alumno destacado correctamente
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Alumno'
+        404:
+          description: No se encontraron alumnos destacados para el curso
+        500:
+          description: Error del servidor
+  /users/signup:
+    post:
+      tags:
+      - Usuario
+      summary: Crear usuario
+      description: Se registra un usuario
+      operationId: crearUsuario
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: usuario
+        description: Usuario a crear
+        required: true
+        schema:
+          $ref: '#/definitions/User'
+      responses:
+        201:
+          description: Usuario registrado correctamente
+          schema:
+            type: object
+            properties:
+              mensaje:
+                type: string
+              username:
+                type: string
+        409:
+          description: No se pudo registrar el usuario
+        500:
+          description: Error de servidor
+  /user/signin:
+    post:
+      tags:
+      - Usuario
+      summary: Inicio de sesion
+      description: Inicio de sesion para usuarios ya existentes
+      operationId: inicioSesion
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: user
+        description: Datos de usuario
+        required: true
+        schema:
+          $ref: '#/definitions/User'
+      responses:
+        200:
+          description: Autenticacion exitosa
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+              jwt:
+                type: string
+        401:
+          description: Autenticacion fallida
+        500:
+          description: Error de servidor
+definitions:
+  Curso:
+    type: object
+    properties:
+      id:
+        type: string
+      anioDictado:
+        type: string
+        format: date-time
+      duracion:
+        type: integer
+        format: int32
+      tema:
+        type: string
+      alumnos:
+        type: array
+        items:
+          $ref: '#/definitions/Alumno'
+  User:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      username:
+        type: string
+      password:
+        type: string
+  Alumno:
+    type: object
+    properties:
+      nombre:
+        type: string
+      apellido:
+        type: string
+      dni:
+        type: number
+        format: int32
+      direccion:
+        type: string
+  nota:
+    type: object
+    properties:
+      nota:
+        type: number
+        format: int32
+  inline_response_201:
+    properties:
+      mensaje:
+        type: string
+      username:
+        type: string
+  inline_response_200:
+    properties:
+      username:
+        type: string
+      jwt:
+        type: string

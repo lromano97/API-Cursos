@@ -3,12 +3,14 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 var router = express.Router();
 const { checkSchema, validationResult } = require('express-validator/check');
+const autenticacion = require('../middleware/autenticacion');
+
 
 const Curso = require('../models/Cursos');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 
-router.get('/', function (req, res) {
+router.get('/', autenticacion, function (req, res) {
     Curso.find(req.query)
     .exec()
     .then(doc =>{
@@ -19,12 +21,11 @@ router.get('/', function (req, res) {
         res.status(200).json({doc});
     })
     .catch(err =>{
-        console.log(err);
         res.status(500).json({error: err});
     });
 });
 
-router.post('/', checkSchema({
+router.post('/', autenticacion, checkSchema({
 
     anioDictado: {
         in: ['body'],
@@ -62,12 +63,11 @@ function (req, res) {
         res.status(201).json(doc);
     })
     .catch((err) => {
-        console.log(err);
         res.status(500).json(err);
     });
 });
 
-router.delete('/:idCurso', function (req, res) {
+router.delete('/:idCurso', autenticacion, function (req, res) {
     Curso.findOneAndDelete({ _id: req.params.idCurso })
     .exec()
     .then(function(curso){
@@ -82,15 +82,17 @@ router.delete('/:idCurso', function (req, res) {
     });
 });
 
-router.get('/:idCurso/alumnos', function (req, res) {
+router.get('/:idCurso/alumnos', autenticacion, function (req, res) {
     Curso.find({_id: req.params.idCurso})
     .select('alumnos')
     .exec()
     .then(doc => {
-        if (doc) {
-            res.status(200).json(doc);
-        } else {
+        if(doc.length === 0){
+            res.status(404).json({mensaje: 'No se encontro ningun curso para el Id provisto'});
+        } else if (doc[0].alumnos.length === 0) {
             res.status(404).json({mensaje: 'No hay alumnos para el curso seleccionado'});
+        } else if(doc){
+            res.status(200).json(doc);
         }
     })
     .catch(err => {
@@ -98,7 +100,7 @@ router.get('/:idCurso/alumnos', function (req, res) {
     });
 });
 
-router.get('/:idCurso/alumnoDestacado', function (req, res) {
+router.get('/:idCurso/alumnoDestacado', autenticacion, function (req, res) {
     Curso.aggregate([
         {
             $unwind: "$alumnos"
@@ -125,10 +127,10 @@ router.get('/:idCurso/alumnoDestacado', function (req, res) {
     ])
     .exec()
     .then(doc => {
-        if(doc){
-            res.status(200).json(doc);
-        }else{
+        if(doc.length === 0) {
             res.status(404).json({mensaje: 'No se encontraron alumnos destacados para el curso elegido'});
+        }else if (doc) {
+            res.status(200).json(doc);
         }
     })
     .catch(err => {
@@ -136,7 +138,7 @@ router.get('/:idCurso/alumnoDestacado', function (req, res) {
     });
 });
 
-router.patch('/:idCurso/:dniAlumno/nota', checkSchema({
+router.patch('/:idCurso/:dniAlumno/nota', autenticacion,  checkSchema({
     nota: {
         in: ['body'],
         errorMessage: 'El campo nota es incorrecto',
