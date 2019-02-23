@@ -5,6 +5,16 @@ Node.js RESTful API para la creación y administración de cursos
 - Node.js
 - MongoDB
 
+### Librerías utilizadas
+- morgan
+- mongoose
+- express
+- jsonwebtoken
+- bcrypt
+- body-parser
+- express-validator
+- nodemon
+
 ## Descripción
 A partir de la API se podrá crear, filtrar y eliminar cursos, como así también se tendrá la posibilidad de asignarle una nota a los alumnos.
 
