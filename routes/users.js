@@ -1,15 +1,15 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const User = require("../models/User");
+const User = require('../models/User');
 
-router.post("/signup", function (req, res) {
+router.post('/signup', function(req, res) {
     User.find({ username: req.body.username })
         .exec()
-        .then((user) => {
+        .then(user => {
             if (user.length != 0) {
                 res.status(409).json({
                     mensaje: 'Nombre de usuario existente.'
@@ -28,68 +28,70 @@ router.post("/signup", function (req, res) {
                         password: hash
                     });
                     user.save()
-                        .then((result) => {
+                        .then(result => {
                             res.status(201).json({
                                 mensaje: 'Usuario creado correctamente',
                                 usuario: user.username
                             });
-                        }).catch((err) => {
+                        })
+                        .catch(err => {
                             res.status(500).json({
                                 error: err
-                            })
+                            });
                         });
                 });
             }
         })
-        .catch((err) => {
+        .catch(err => {
             res.status(500).json({
                 error: err
             });
         });
 });
 
-router.post('/login', function (req, res) {
-    User.findOne({username: req.body.username})
-    .exec()
-    .then((user) => {
-        if(user == null){
-            res.status(401).json({
-                mensaje: 'Autenticacion fallida'
-            });
-            return;
-        }
-        bcrypt.compare(req.body.password, user.password, (err, result) => {
-            if(err){
+router.post('/login', function(req, res) {
+    User.findOne({ username: req.body.username })
+        .exec()
+        .then(user => {
+            if (user == null) {
                 res.status(401).json({
                     mensaje: 'Autenticacion fallida'
                 });
                 return;
             }
-            if (result) {
-                const token = jwt.sign({
-                    username: user.username,
-                    id: user._id
-                },
-                process.env.JWT_KEY,
-                {
-                    expiresIn: '1h'
+            bcrypt.compare(req.body.password, user.password, (err, result) => {
+                if (err) {
+                    res.status(401).json({
+                        mensaje: 'Autenticacion fallida'
+                    });
+                    return;
+                }
+                if (result) {
+                    const token = jwt.sign(
+                        {
+                            username: user.username,
+                            id: user._id
+                        },
+                        process.env.JWT_KEY,
+                        {
+                            expiresIn: '1h'
+                        }
+                    );
+                    res.status(200).json({
+                        token: token
+                    });
+                    return;
+                }
+                res.status(401).json({
+                    mensaje: 'Autenticacion fallida'
                 });
-                res.status(200).json({
-                    mensaje: 'Autenticacion exitosa',
-                    token: token
-                });
-                return;
-            }
-            res.status(401).json({
-                mensaje: 'Autenticacion fallida'
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
             });
         });
-    })
-    .catch((err) => {
-        res.status(500).json({
-            error: err
-        });
-    });
 });
 
 module.exports = router;

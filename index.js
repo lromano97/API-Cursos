@@ -8,8 +8,17 @@ const cursosRoutes = require('./routes/cursos.js');
 const usersRoutes = require('./routes/users.js');
 const port = process.env.PORT;
 
+app.use(function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header(
+        'Access-Control-Allow-Headers',
+        'Origin, X-Requested-With, Content-Type, Accept'
+    );
+    next();
+});
 app.use(morgan('dev'));
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
+
 app.use(bodyParser.json());
 app.use('/cursos', cursosRoutes);
 app.use('/users', usersRoutes);
@@ -19,11 +28,11 @@ app.use((req, res, next) => {
     });
 });
 
-mongoose.connect(process.env.MONGO_ROUTE, {useNewUrlParser: true});
+mongoose.connect(process.env.MONGO_ROUTE, { useNewUrlParser: true });
 var db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'connection error:'));
 
-db.once('open', function () {
+db.once('open', function() {
     app.listen(port, () => console.log('Corriendo en ' + port));
-})
+});

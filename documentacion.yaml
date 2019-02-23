@@ -69,6 +69,42 @@ paths:
         500:
           description: Error de servidor
   /cursos/{cursoId}:
+  get:
+      tags:
+      - Curso
+      summary: Obtener curso
+      description: Se pueden filtrar el curso a partir de los parametros agregados en el query
+      operationId: obtenerCurso
+      parameters:
+      - name: anioDictado
+        in: query
+        description: Año en el que se dicto el curso
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duracion
+        in: query
+        description: Duracion del curso a filtrar
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+      responses:
+        200:
+          description: Se obtuvieron los datos del curso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Curso'
+        404:
+          description: No se encontraron datos del curso
+        500:
+          description: Error de servidor
     delete:
       tags:
       - Curso
@@ -93,6 +129,32 @@ paths:
                 $ref: '#/components/schemas/Curso'
         404:
           description: No se encontraron datos del curso a eliminar
+        500:
+          description: Error de servidor
+    patch:
+      tags:
+      - Curso
+      summary: Editar un curso
+      description: Se edita un curso a partir de su Id
+      operationId: editarCurso
+      parameters:
+      - name: cursoId
+        in: path
+        description: Id del curso a editar
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: Se actualizo correctamente el curso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Curso'
+        404:
+          description: No se encontraron datos del curso a editar
         500:
           description: Error de servidor
   /cursos/{cursoId}/{alumnoId}/nota:
