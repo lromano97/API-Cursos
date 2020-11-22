@@ -1,11 +1,9 @@
 import bodyParser from "body-parser";
 import express from "express";
 import morgan from "morgan";
-import "./dao";
-import { CursosRoute } from "./routes";
+import { CourseRoutes } from "./courses";
 
 const app = express();
-// const usersRoutes = require("./routes/users.js");
 const port = process.env.PORT;
 
 app.use(function (req, res, next) {
@@ -18,7 +16,7 @@ app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(bodyParser.json());
-app.use("/cursos", CursosRoute);
+app.use("/cursos", CourseRoutes);
 // app.use("/users", usersRoutes);
 app.use((req, res, next) => {
 	res.status(404).json({
@@ -27,12 +25,3 @@ app.use((req, res, next) => {
 });
 
 app.listen(port, () => console.log(`Running on port ${port}`));
-
-// mongoose.connect(process.env.MONGO_ROUTE, { useNewUrlParser: true });
-// var db = mongoose.connection;
-
-// db.on("error", console.error.bind(console, "connection error:"));
-
-// db.once("open", function () {
-// 	app.listen(port, () => console.log("Corriendo en " + port));
-// });

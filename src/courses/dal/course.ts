@@ -1,6 +1,6 @@
 import { Document } from "mongoose";
-import { CourseCollection } from "../models";
-import { Course as CourseType, Student as StudentType } from "../types";
+import { CourseCollection } from "./models";
+import {CourseType, StudentType} from "../types";
 
 type Query = { [key: string]: string | number | Date };
 
