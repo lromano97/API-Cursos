@@ -1,3 +1,3 @@
-export {} from "./Alumnos";
-export {} from "./Cursos";
-export {default as UserModel} from "./User";
+export { default as Alumno } from "./Student";
+export { default as CourseCollection } from "./Course";
+export { default as UserCollection } from "./User";

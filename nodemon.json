@@ -1,7 +1,11 @@
 {
-    "env": {
-        "JWT_KEY": "secret",
-        "PORT": 3001,
-        "MONGO_ROUTE": "mongodb://localhost/dblandit"
-    }
+	"watch": "src/**/*.ts",
+	"execMap": {
+		"ts": "ts-node"
+	},
+	"env": {
+		"JWT_KEY": "secret",
+		"PORT": 3001,
+		"MONGO_ROUTE": "mongodb://localhost/dblandit"
+	}
 }
