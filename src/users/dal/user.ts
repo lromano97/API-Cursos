@@ -1,15 +1,17 @@
 import { Document } from "mongoose";
-import { UserCollection } from "./models";
+
 import { UserType } from "../types";
 
-type UserDocument = Document | UserType;
+import { UserCollection } from "./models";
 
-export const findUser = async (username: string): Promise<UserDocument | null> => {
-	return await UserCollection.findOne({ username }).exec();
+type UserDocument = Document & UserType;
+type Query = { [key: string]: string };
+
+export const findUser = async (query: Query): Promise<UserDocument | null> => {
+	return (await UserCollection.findOne(query).exec()) as UserDocument;
 };
 
 export const createUser = async (username: string, password: string): Promise<void> => {
 	const newUser = new UserCollection({ username, password });
 	await newUser.save();
 };
-

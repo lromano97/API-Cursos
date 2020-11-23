@@ -1,2 +1,2 @@
-export {Course as CourseType} from "./Course";
-export {Student as StudentType} from "./Student";
+export { Course as CourseType } from "./Course";
+export { Student as StudentType } from "./Student";

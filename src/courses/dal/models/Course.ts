@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 import * as Student from "./Student";
 const StudentSchema = Student.default.schema;
 

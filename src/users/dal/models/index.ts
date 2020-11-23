@@ -1,1 +1,1 @@
-export {default as UserCollection} from "./User";
+export { default as UserCollection } from "./User";

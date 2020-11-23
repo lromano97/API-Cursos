@@ -1,7 +1,22 @@
-import bodyParser from "body-parser";
+import * as bodyParser from "body-parser";
 import express from "express";
+import { connect } from "mongoose";
 import morgan from "morgan";
+
 import { CourseRoutes } from "./courses";
+import autenticacion from "./middleware/tokenInterceptor";
+import { UserRoutes } from "./users";
+
+(async () => {
+	try {
+		await connect(process.env.MONGO_ROUTE || "mongodb://localhost/courses", {
+			useNewUrlParser: true,
+			useUnifiedTopology: true,
+		});
+	} catch (e) {
+		throw new Error("Cannot connect to mongo database");
+	}
+})();
 
 const app = express();
 const port = process.env.PORT;
@@ -16,8 +31,11 @@ app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(bodyParser.json());
+
+app.use("/users", UserRoutes);
+app.use(autenticacion);
 app.use("/cursos", CourseRoutes);
-// app.use("/users", usersRoutes);
+
 app.use((req, res, next) => {
 	res.status(404).json({
 		error: "Ruta no encontrada",

@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
 import { body } from "express-validator";
+
 import { findCourse, createCourse, getCourseStudents, deleteCourse } from "../dal";
 
 export const courseValidator = [
 	body("year").isDate(),
 	body("duration").isNumeric(),
-	body("subject").isString().isLength({min: 2})
+	body("subject").isString().isLength({ min: 2 }),
 ];
 
 export const getCoursesMethod = async (req: Request, res: Response): Promise<void> => {
@@ -44,7 +45,7 @@ export const getStudentsFromCourseMethod = async (req: Request, res: Response): 
 	try {
 		const studentsOfTheCourse = await getCourseStudents({ _id: req.params.idCourse });
 		if (studentsOfTheCourse.length === 0) {
-			res.status(204).send({message: "No students were available for the requested course"});
+			res.status(204).send({ message: "No students were available for the requested course" });
 			return;
 		}
 		res.status(200).send(studentsOfTheCourse);
@@ -56,7 +57,7 @@ export const getStudentsFromCourseMethod = async (req: Request, res: Response): 
 export const deleteCourseByIdMethod = async (req: Request, res: Response): Promise<void> => {
 	try {
 		if (!req.params.idCourse) {
-			res.status(400).send({message: "Missing course id"});
+			res.status(400).send({ message: "Missing course id" });
 		}
 		await deleteCourse({ _id: req.params.idCourse });
 		res.sendStatus(200);
