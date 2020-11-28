@@ -1,9 +1,17 @@
-import express from "express";
+import express, { Router } from "express";
 
-import { signInUser, signUpUser } from "./userMethods";
+import { LoggerType } from "../../utils";
+
+import { setUpMethods } from "./userMethods";
 const router = express.Router();
 
-router.post("/signup", signUpUser);
-router.post("/signin", signInUser);
+const setUpUserRoutes = (logger: LoggerType): Router => {
+	const { signInUser, signUpUser } = setUpMethods(logger);
 
-export { router };
+	router.post("/signup", signUpUser);
+	router.post("/signin", signInUser);
+
+	return router;
+};
+
+export { setUpUserRoutes };

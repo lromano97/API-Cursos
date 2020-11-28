@@ -1,1 +1,1 @@
-export { router as CourseRoutes } from "./cursos";
+export { setUpCourseRoutes } from "./cursos";

@@ -6,6 +6,6 @@
 	"env": {
 		"JWT_KEY": "secret",
 		"PORT": 3001,
-		"MONGO_ROUTE": "mongodb://localhost/dblandit"
+		"MONGO_ROUTE": "mongodb://localhost/courses"
 	}
 }

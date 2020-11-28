@@ -1,1 +1,1 @@
-export { CourseRoutes } from "./route";
+export { setUpCourseRoutes } from "./route";

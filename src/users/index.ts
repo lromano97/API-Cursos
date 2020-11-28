@@ -1,1 +1,1 @@
-export { UserRoutes } from "./route";
+export { setUpUserRoutes } from "./route";

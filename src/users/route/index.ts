@@ -1,1 +1,1 @@
-export { router as UserRoutes } from "./users";
+export { setUpUserRoutes } from "./users";
